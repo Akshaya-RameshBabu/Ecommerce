@@ -38,35 +38,33 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
 <section id="contact" class="contact py-5" style="background-color: #f8f9fa;">
     <div class="container" data-aos="fade-up">
         <div class="section-title text-center mb-5">
-            <h2 style="font-size: 32px; font-weight: bold; color: #dc2626;">Contact Us</h2>
+            <h2 style="font-size: 32px; font-weight: bold;" class="primaryclr">Contact Us</h2>
             <p style="font-size: 18px; color: #4b5563;">Get in touch with us for any inquiries or support regarding our eco-friendly crackers.</p>
         </div>
 
         <div class="row">
             <div class="col-lg-12 mb-4">
-                <iframe style="border: 0; width: 100%; height: 270px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3935.698966077589!2d77.79633687495158!3d9.44777429063125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b06cee417a0b60f%3A0x4ab19fa1f072c1c2!2sPalaniandavar%20Colony%2C%20Kaliappa%20Nagar%2C%20Sivakasi%2C%20Tamil%20Nadu%20626123!5e0!3m2!1sen!2sin!4v1756120688701!5m2!1sen!2sin" 
-                    frameborder="0" allowfullscreen></iframe>
+               <iframe style="border: 0; width: 100%; height: 270px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.574682685331!2d78.07374607479207!3d9.886004190213642!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00cfe9e0d71771%3A0xb00d568a6b1efdd6!2sTechnology%20Business%20Incubator%20(TCE-TBI)!5e0!3m2!1sen!2sin!4v1764237040608!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
 
             <div class="col-lg-4">
                 <div class="info-container" style="background: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 20px;">
                     <div class="info-item mb-4">
-                        <i class="bi bi-geo-alt" style="color: #dc2626; font-size: 24px;"></i>
+                        <i class="fa-solid fa-location-dot primaryclr" style="font-size: 24px;"></i>
                         <div>
                             <h4 style="font-size: 18px; font-weight: bold; color: #1f2937;">Location:</h4>
                             <p style="color: #4b5563;"><?php echo nl2br(htmlspecialchars($address, ENT_QUOTES, 'UTF-8')); ?></p>
                         </div>
                     </div>
                     <div class="info-item mb-4">
-                        <i class="bi bi-envelope" style="color: #dc2626; font-size: 24px;"></i>
+                        <i class="fa-regular fa-envelope primaryclr" style="font-size: 24px;"></i>
                         <div>
                             <h4 style="font-size: 18px; font-weight: bold; color: #1f2937;">Email:</h4>
                             <p style="color: #4b5563;"><?php echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?></p>
                         </div>
                     </div>
                     <div class="info-item">
-                        <i class="bi bi-phone" style="color: #dc2626; font-size: 24px;"></i>
+                        <i class="fa-solid fa-phone primaryclr" style=" font-size: 24px;"></i>
                         <div>
                             <h4 style="font-size: 18px; font-weight: bold; color: #1f2937;">Call:</h4>
                             <p style="color: #4b5563;">
@@ -105,7 +103,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
                             <div class="sent-message">Your message has been sent. Thank you!</div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary" style="background: linear-gradient(to right, #dc2626, #f97316); border: none; padding: 10px 30px; border-radius: 50px;">
+                            <button type="submit" class="btn btn-primary" style="background: linear-gradient(to right, #064e3b, #84cc16); border: none; padding: 10px 30px; border-radius: 50px; color:white">
                                 Send Message
                             </button>
                         </div>

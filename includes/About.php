@@ -15,7 +15,7 @@ $email = $contact['email'] ?? 'info@rgreencrackers.com';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About RGreen Enterprise</title>
+    <title>About RGreenMart </title>
         <meta name="keywords" content="Deepavali crackers sale 2025, Buy crackers online Deepavali 2025, Diwali crackers offer 2025, Deepavali discount crackers online, 
 Diwali crackers shop near me, Deepavali crackers combo offer 2025, Wholesale Diwali crackers online, Sivakasi crackers online shopping, , 
 Diwali crackers home delivery 2025, Best price Diwali crackers online, Cheapest Deepavali crackers online 2025, Eco-friendly Diwali crackers online 2025, Diwali crackers gift box sale 2025, Online cracker booking for Deepavali 2025, Buy Sivakasi crackers for Deepavali 2025, Buy crackers online Chennai Deepavali 2025, Diwali crackers sale Coimbatore 2025, Deepavali crackers shop Madurai 2025, 
@@ -178,7 +178,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .stat-card.years {
             bottom: -1.5rem;
             left: -1.5rem;
-            border: 4px solid #fee2e2; /* red-100 */
+            border: 4px solid #064e3b; /* red-100 */
         }
         .stat-card.customers {
             top: -1.5rem;
@@ -188,7 +188,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .stat-card .value {
             font-size: 1.875rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: #064e3b; /* red-600 */
         }
         .stat-card.customers .value {
             color: #ffffff;
@@ -198,7 +198,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
             color: #4b5563; /* gray-600 */
         }
         .stat-card.customers .label {
-            color: #dcfce7; /* green-100 */
+            color: #064e3b; /* green-100 */
         }
         .contact-section {
             padding: 5rem 0;
@@ -224,7 +224,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .contact-form h2 {
             font-size: 2rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: #064e3b; /* red-600 */
             margin-bottom: 1.5rem;
         }
         .form-group {
@@ -243,7 +243,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         }
         .contact-form input:focus,
         .contact-form textarea:focus {
-            border-color: #dc2626; /* red-600 */
+            border-color: #064e3b; /* red-600 */
             outline: none;
         }
         .contact-form textarea {
@@ -251,7 +251,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
             resize: vertical;
         }
         .contact-form button {
-            background: linear-gradient(to right, #dc2626, #f97316); /* red-600 to orange-400 */
+            background: linear-gradient(to right, #064e3b, #f97316); /* red-600 to orange-400 */
             color: #ffffff;
             font-weight: bold;
             padding: 0.75rem 2rem;
@@ -273,7 +273,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .contact-info h3 {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: #064e3b; /* red-600 */
             margin-bottom: 1rem;
         }
         .contact-info p {
@@ -313,7 +313,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         }
         .stat-box {
             background: #fff;
-            border: 1px solid #fca5a5; /* light red border */
+            border: 1px solid #064e3b; /* light red border */
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border-radius: 12px;
             padding: 24px;
@@ -325,7 +325,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .stat-box .value {
             font-size: 2rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: #064e3b; /* red-600 */
         }
         .stat-box .label {
             margin-top: 8px;
@@ -339,7 +339,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
         .vision-values h3, .why-choose h3 {
             font-size: 2rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: var(--accent); /* red-600 */
             margin-bottom: 1.5rem;
         }
         .vision-values ul, .why-choose ul {
@@ -388,12 +388,11 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
                 <!-- Content Side -->
                 <div class="content-side">
                     <div>
-                        <h2>About RGreen Crackers</h2>
+                        <h1 class="branded ">Welcome to RGreenMart </h1>
+                        <p class="text-muted secclr">Dried Fruits & Nuts – Fresh. Pure. Premium</p>
+                        <p>Founded in 1975, RGreen Enterprise has been a trusted name in the trading business for nearly five decades. What began as a modest venture has now grown into a well-established trading house that has successfully served customers across different sectors. Today, the company proudly stands as a third-generation family-run enterprise, combining traditional values with modern business practices.</p>
                         <p>
-                           Founded in 1975, RGreen Enterprise has been a trusted name in the trading business for nearly five decades. What began as a modest venture has now grown into a well-established trading house that has successfully served customers across different sectors. Today, the company proudly stands as a third-generation family-run enterprise, combining traditional values with modern business practices.
-                        </p>
-                        <p>
-                            Over the years, RGreen Enterprise has built its reputation on trust, quality, and reliability. With a diverse portfolio that includes fireworks trading, seasonal products, and other wholesale businesses, the company has catered to customers with consistency and excellence.
+                            Over the years, RGreen Enterprise has built its reputation on trust, quality, and reliability. With a diverse portfolio that includes trading, seasonal products, and other wholesale businesses, the company has catered to customers with consistency and excellence.
                         </p>
                     </div>
 
@@ -433,7 +432,7 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
                 <!-- Image Side -->
                 <div class="image-side">
                     <div class="celebration">
-                    <img src="../images/Celebration.jpg" alt="RGreen Crackers Embelem" >
+                    <img src="../images/Celebration.jpg" alt="RGreenMart Embelem" >
                     
     </div>
                     <div class="image-container">
@@ -460,13 +459,13 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
     </section>
     <section class="why-choose">
         <div class="container">
-            <h3>Why Customers Choose RGreen Enterprise</h3>
+            <h3>Why Choose Us?</h3>
             <ul>
-                <li>Over 50 years of experience in trading.</li>
-                <li>Multi-generational business expertise.</li>
-                <li>Strong supplier network and reliable sourcing.</li>
-                <li>Commitment to customer satisfaction.</li>
-                <li>Competitive pricing with uncompromised quality.</li>
+                <li>Premium Grade A Quality</li>
+                <li>Fresh Batch Every Week</li>
+                <li>No Chemicals, No Polish, No Preservatives</li>
+                <li>Zip-lock Freshness Packaging</li>
+                <li>Fast Delivery across India</li>
             </ul>
         </div>
     </section>
@@ -478,22 +477,22 @@ Diwali crackers price list 2025, Diwali crackers family pack offers, Diwali crac
                 <!-- Brand -->
                 <div class="stat-box">
                     <div class="value">5+</div>
-                    <div class="label">Brands</div>
+                    <div class="label secclr">Category</div>
                 </div>
                 <!-- Customers -->
                 <div class="stat-box">
                     <div class="value">500+</div>
-                    <div class="label">Happy Customers</div>
+                    <div class="label secclr">Customers</div>
                 </div>
                 <!-- Years -->
                 <div class="stat-box">
                     <div class="value">50+</div>
-                    <div class="label">Years of Excellence</div>
+                    <div class="label secclr">Years of Excellence</div>
                 </div>
                 <!-- Delivery -->
                 <div class="stat-box">
                     <div class="value">10,000+</div>
-                    <div class="label">Successful Deliveries</div>
+                    <div class="label secclr">Successful Deliveries</div>
                 </div>
             </div>
         </div>

@@ -6,16 +6,6 @@ if (!defined('HEADER_INCLUDED')) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGreen Enterprise</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="icon" type="image/webp" href="assets/img/LOGO.webp">
-    <meta name="keywords" content="Deepavali crackers sale 2025, Buy crackers online Deepavali 2025, Diwali crackers offer 2025, ...">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PE2CJCXNGL"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -35,15 +25,15 @@ if (!defined('HEADER_INCLUDED')) {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 9.143 15.143 12l2.286 6.857L12 15.143 6.857 18 9.143 11.143 3 8l5.714 2.857L12 3z" />
                     </svg>
                     <div class="logo-text">
-                        <h1>RGreen Crackers</h1>
-                        <p>Celebrate Safely & Brightly</p>
+                        <h1>RGreenMart</h1>
+                        <p>Fresh. Pure. Premium.</p>
                     </div>
                 </div>
                   
                 <nav class="desktop-nav" aria-label="Main navigation">
                     <a class="header-nav" href="/Ecommerce/index.php">Home</a>
                     <a class="header-nav" href="/Ecommerce/includes/About.php">About Us</a>
-                    <a class="header-nav" href="/Ecommerce/includes/SafetyTips.php">Safety</a>
+                    <a class="header-nav" href="/Ecommerce/includes/HealthyTips.php">Safety</a>
                     <a class="header-nav" href="/Ecommerce/includes/ContactUs.php">Contact</a>
                     <!-- <div class="contact-icons">
                         <a href="https://www.instagram.com/mass__mari/reel/DPGeGiDgcos/" class="contact-icon instagram-icon" aria-label="Instagram" target="_blank">
@@ -67,7 +57,7 @@ if (!defined('HEADER_INCLUDED')) {
                  <a href="?page=viewcart" class="hideanchor mr-5 cart-link">
                                         <div class=" mx-1" title="continue to pay">
                                     <div class="cart-icon-wrapper">
-    <i class="fa-solid fa-cart-shopping" style="font-size:22px;"></i>
+    <i class="fa-solid fa-cart-shopping headicon" style="font-size:22px;"></i>
     <span id="cartCount" class="noticount">0</span>
 </div>
 
@@ -86,7 +76,7 @@ if (!defined('HEADER_INCLUDED')) {
                     <ul>
                         <li><a href="/index.php">Home</a></li>
                         <li><a href="/includes/About.php">About Us</a></li>
-                        <li><a href="/SafetyTips.php">Safety</a></li>
+                        <li><a href="/HealthyTips.php">Safety</a></li>
                         <li><a href="/ContactUs.php">Contact</a></li>
                         <!-- <li>
                             <div class="contact-icons">
@@ -136,3 +126,10 @@ if (!defined('HEADER_INCLUDED')) {
 </body>
 </html>
 <?php } ?>
+
+
+
+
+
+
+

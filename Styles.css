@@ -3,20 +3,21 @@
   padding: 0;
   box-sizing: border-box;
 }
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-  line-height: 1.6;
-}
 :root {
+  --secondary:#84cc16;
+  --link:#639b10;
+  --primaryclr:#064e3b;
+  --green-700:#047857;
+--green-600:#059669;
+--green-50:#f0fdf4;
+--accent: #064e3b;
   --white: #ffffff;
   --black: #000000;
 
   /* Text Colors */
   --text-dark: #1f2937;
   --text-muted: #999;
-
+  --muted:#475569
   /* Gray Shades */
   --gray-light-bg: #f3f4f6;
   --gray-border: #e5e7eb;
@@ -38,6 +39,24 @@ body {
   --green-accent: #10b981;
   --green-light: #d1fae5;
   --green-hover: #a7f3d0;
+}
+.headicon{
+  color: var(--link);
+}
+.headicon:hover{
+  color: var(--primaryclr)!important;
+}
+.primaryclr{
+  color: var(--primaryclr) !important;
+}
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  background: linear-gradient(180deg,var(--green-50),white 40%);
+}
+.secclr{
+  color: var(--secondary) !important;
 }
 h1,h2,h3.h4,h5,h6{
   font-weight: bold;
@@ -149,12 +168,12 @@ h6 {
         .sparkles-icon {
             width: 1.5rem;
             height: 1.5rem;
-            color: #ef4444; /* red-500 */
+            color:var(--accent); /* red-500 */
         }
         .logo-text h1 {
             font-size: 1.25rem;
             font-weight: bold;
-            color: #dc2626; /* red-600 */
+            color: var(--accent); /* red-600 */
             margin: 0;
         }
         .logo-text p {
@@ -168,7 +187,7 @@ h6 {
             gap: 2rem;
         }
         .desktop-nav a {
-            color: #374151; /* gray-700 */
+            color: #639b10; /* gray-700 */
             font-weight: 500;
             text-decoration: none;
             transition: color 0.2s;
@@ -178,7 +197,7 @@ h6 {
             height:2rem !important;
         }
         .desktop-nav a:hover {
-            color: #dc2626; /* red-600 */
+            color: var(--accent); 
         }
         .search-cart {
             display: none;
@@ -1693,7 +1712,7 @@ white-space: nowrap;
     text-decoration: none;
 }
 .hideanchor:hover{
- color: var(--highlight-red);
+ color: var(--accent);
 }
 .cartsplit{
   min-height: 50vh;
@@ -6802,3 +6821,86 @@ border-bottom: 3px solid var(--gray-border);
 }
 
 /*# sourceMappingURL=bootstrap-grid.css.map */
+.branded{
+  font-weight:700;
+  color:var(--accent);
+}
+.muted{
+  color:var(--muted);
+}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:9999px;
+  background:linear-gradient(135deg,var(--green-600),var(--green-700));
+}
+
+
+        /* General styling for the privacy policy container */
+        .policy-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            line-height: 1.6;
+        }
+
+        /* Styling for section headings */
+        .policy-heading {
+            border-bottom: 2px solid #e5e7eb; /* Tailwinds gray-200 */
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* List styling for the use of information section */
+        .policy-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .policy-list li {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+       
+
+        /* Specific style for the transaction processing note */
+        .note-box {
+            background-color: #f3f4f6; /* Tailwinds gray-100 */
+            border-left: 4px solid #84cc16; /* Tailwinds blue-500 */
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+
+
+.note-boxlist li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.note-boxlist li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  
+  color: #84cc16;
+  font-weight: bold;
+  font-size: 0.9rem;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 3px 3px 1px #84cc16;
+  
+}

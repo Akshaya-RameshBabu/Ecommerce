@@ -45,7 +45,7 @@
   </a>
 </li>
 
-          <li><a class="nav-link scrollto" href=" /SafetyTips.php">SafetyTips</a></li>
+          <li><a class="nav-link scrollto" href=" /HealthyTips.php">SafetyTips</a></li>
           <li><a class="nav-link scrollto" href=" /ContactUs.php">Contact Us</a></li>
           
         </ul>

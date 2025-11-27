@@ -86,6 +86,8 @@ $displayImgPath = htmlspecialchars($displayImgPath, ENT_QUOTES, 'UTF-8');
     <meta name="keywords"
         content="Deepavali crackers sale 2025, Buy crackers online Deepavali 2025, Diwali crackers offer 2025, Deepavali discount crackers online, Diwali crackers shop near me, Deepavali crackers combo offer 2025, Wholesale Diwali crackers online, Sivakasi crackers online shopping, Diwali crackers home delivery 2025, Best price Diwali crackers online, Cheapest Deepavali crackers online 2025, Eco-friendly Diwali crackers online 2025, Diwali crackers gift box sale 2025, Online cracker booking for Deepavali 2025, Buy Sivakasi crackers for Deepavali 2025, Buy crackers online Chennai Deepavali 2025, Diwali crackers sale Coimbatore 2025, Deepavali crackers shop Madurai 2025, Tirunelveli Deepavali crackers online, Salem Diwali crackers discount 2025, Deepavali crackers gift pack 2025, Green crackers for Diwali 2025, Cheap Diwali crackers online 2025, Buy Diwali crackers online Tamil Nadu 2025, Standard Fireworks Diwali crackers 2025, Ayyan Fireworks branded crackers online, Sony Fireworks crackers sale 2025, Sri Kaliswari branded crackers Deepavali 2025, Rgreen Enterprise crackers sale 2025, Trichy branded crackers discount Diwali 2025">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="./Styles.css">
 
 </head>
@@ -103,20 +105,13 @@ $displayImgPath = htmlspecialchars($displayImgPath, ENT_QUOTES, 'UTF-8');
     <!-- Carousel Inner -->
     <div class="carousel-inner">
       <div class="carousel-item active" data-bs-interval="5000" style=" position: relative;">
-        <img src="images/BANNER.jpg" class="d-block w-100" alt="Banner 1" style="object-fit: cover; max-height: 80vh;">
+        <img src="images/BANNER1.png" class="d-block w-100" alt="Banner 1" style="object-fit: cover; max-height: 80vh;">
       </div>
       <div class="carousel-item" data-bs-interval="5000" style="position: relative;">
-        <img src="images/BANNER3.jpg" class="d-block w-100" alt="Banner 3" style="object-fit: cover; max-height: 80vh;">
-        <div class="instagram-wrapper">
-          <blockquote 
-            class="instagram-media" 
-            data-instgrm-permalink="https://www.instagram.com/reel/DPGeGiDgcos/?utm_source=ig_embed" 
-            data-instgrm-version="14">
-          </blockquote>
-        </div>
+        <img src="images/BANNER3.png" class="d-block w-100" alt="Banner 3" style="object-fit: cover; max-height: 80vh;">
       </div>
       <div class="carousel-item" data-bs-interval="5000">
-        <img src="images/BANNER2.jpg" class="d-block w-100" alt="Banner 2" style="object-fit: cover; max-height: 80vh;">
+        <img src="images/BANNER2.png" class="d-block w-100" alt="Banner 2" style="object-fit: cover; max-height: 80vh;">
       </div>
     </div>
 

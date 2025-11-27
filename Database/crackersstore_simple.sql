@@ -1,3 +1,4 @@
+use diwali_db;
 DROP TABLE IF EXISTS `items`;
 CREATE TABLE IF NOT EXISTS `items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -14,8 +15,21 @@ CREATE TABLE IF NOT EXISTS `items` (
   `compressed_image` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS `admin_details`;
+CREATE TABLE IF NOT EXISTS `admin_details` (  
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(20) NOT NULL,
+    `gst_number` VARCHAR(20) NOT NULL,
+    `shopaddress` TEXT NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `admin_details` (`name`, `email`, `phone`, `gst_number`,`shopaddress`) VALUES
-('Admin Name', 'admin@example.com', '1234567890', '22AAAAA0000A1Z5',"my address");
+('Admin Name', 'sales@rgreenmart.com', '+91 99524 24474', '22AAAAA0000A1Z5',"Ground Floor, Thiagarajar Advanced Research Centre, 
+TCE Road, Thirupparankundram, Madurai , Tamil Nadu
+Pincode- 625005
+");
 
 
 DROP TABLE IF EXISTS `settings`;
