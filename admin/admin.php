@@ -2,9 +2,12 @@
 <?php
 session_start();
 require_once __DIR__ . '../includes/env.php';
-if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
-    header('Location: admin_login.php');
-    exit;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: admin_login.php");
+    exit();
 }
 
 // Database connection

@@ -1,12 +1,11 @@
 <?php
-// session_start();
-
-// Protect this page
-// if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-//     header("Location: admin_login.php");
-//     exit();
-// }
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: admin_login.php");
+    exit();
+}
 require_once 'config.php';
 
 // ----------------- Function to Delete Directory Recursively -----------------
@@ -67,111 +66,6 @@ function compressImage($source, $destination, $quality = 25) {
     return $result;
 }
 
-// ----------------- Truncate Table and Delete Images -----------------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['truncate_items'])) {
-    try {
-        // Truncate the database table
-        $conn->exec("TRUNCATE TABLE items");
-
-        // Delete all images in the Uploads and compressed directories
-        $uploadDir = 'Uploads/';
-        $compressedDir = 'Uploads/compressed/';
-        $success = true;
-        $messages = [];
-
-        if (is_dir($uploadDir)) {
-            if (!deleteDirectory($uploadDir)) {
-                $success = false;
-                $messages[] = "Failed to delete Uploads directory.";
-            } else {
-                mkdir($uploadDir, 0777, true); // Recreate Uploads directory
-            }
-        }
-        if (is_dir($compressedDir)) {
-            if (!deleteDirectory($compressedDir)) {
-                $success = false;
-                $messages[] = "Failed to delete compressed images directory.";
-            } else {
-                mkdir($compressedDir, 0777, true); // Recreate compressed directory
-            }
-        }
-
-        if ($success) {
-            echo "<p class='text-green-500 text-center'>All items and associated images (including compressed) have been deleted successfully.</p>";
-        } else {
-            echo "<p class='text-red-500 text-center'>Errors occurred during deletion:</p>";
-            echo "<ul class='text-red-500 text-center'>";
-            foreach ($messages as $msg) {
-                echo "<li>" . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') . "</li>";
-            }
-            echo "</ul>";
-        }
-    } catch (PDOException $e) {
-        echo "<p class='text-red-500 text-center'>Error truncating table: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
-    }
-}
-
-// ----------------- Delete Specified Directories and Files -----------------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_all_assets'])) {
-    $pathsToDelete = [
-        'dirs' => [
-            '../assets',
-            '../../images',
-            '../../bills',
-            '../../Database',
-            '../../forms',
-            '../../includes',
-            '../../Installation',
-            '../../vendor',
-            '../../admin'
-        ],
-        'files' => [
-            '../../.env',
-            '../../ContactUs.php',
-            '../../products.php',
-            '../../productshome.php',
-            '../../index.php'
-        ]
-    ];
-
-    $errors = [];
-    $success = true;
-
-    // Delete directories
-    foreach ($pathsToDelete['dirs'] as $dir) {
-        if (is_dir($dir)) {
-            if (!deleteDirectory($dir)) {
-                $errors[] = "Failed to delete directory: $dir";
-                $success = false;
-            }
-        } else {
-            $errors[] = "Directory not found: $dir";
-        }
-    }
-
-    // Delete files
-    foreach ($pathsToDelete['files'] as $file) {
-        if (file_exists($file)) {
-            if (!unlink($file)) {
-                $errors[] = "Failed to delete file: $file";
-                $success = false;
-            }
-        } else {
-            $errors[] = "File not found: $file";
-        }
-    }
-
-    if ($success && empty($errors)) {
-        echo "<p class='text-green-500 text-center'>All specified directories and files have been deleted successfully.</p>";
-    } else {
-        echo "<p class='text-red-500 text-center'>Errors occurred during deletion:</p>";
-        echo "<ul class='text-red-500 text-center'>";
-        foreach ($errors as $error) {
-            echo "<li>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</li>";
-        }
-        echo "</ul>";
-    }
-}
 
 // ----------------- Single Upload -----------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
@@ -387,18 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bundle_upload'])) {
                     <button type="submit" name="bundle_upload" class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors">Bundle Upload</button>
                 </form>
 
-                <!-- Danger Zone -->
-                <h3 class="text-xl font-semibold text-red-600 mt-4 mb-4">Danger Zone</h3>
-                <form method="POST" onsubmit="return confirm('⚠️ This will delete ALL items and their associated images (including compressed) permanently. Continue?');" class="mb-4">
-                    <button type="submit" name="truncate_items" class="w-full bg-red-600 text-white p-3 rounded-lg hover:bg-red-700 transition-colors">
-                        Truncate Items Table and Delete Images
-                    </button>
-                </form>
-                <form method="POST" onsubmit="return confirm('⚠️ This will delete the admin, assets, images directories, and specified files permanently. This action cannot be undone. Continue?');" style="display:none">
-                    <button type="submit" name="delete_all_assets" class="w-full bg-red-800 text-white p-3 rounded-lg hover:bg-red-900 transition-colors">
-                        Delete Admin, Assets, Images, and Specified Files
-                    </button>
-                </form>
+              
             </div>
         </main>
     </div>
