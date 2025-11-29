@@ -213,7 +213,7 @@ try {
                     <p class='bold'>Total Items: " . count($itemsBought) . "</p>
                 </div>
                 <div style='text-align: center; margin: 20px;'>
-                 <a href='/Ecommerce/bills/estimate_$enquiryNumber.pdf' class='btn-success' download>Download PDF</a>
+                 <a href='/bills/estimate_$enquiryNumber.pdf' class='btn-success' download>Download PDF</a>
                 </div>
             </div>
         </body>

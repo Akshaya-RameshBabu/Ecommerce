@@ -31,10 +31,10 @@ if (!defined('HEADER_INCLUDED')) {
                 </div>
                   
                 <nav class="desktop-nav" aria-label="Main navigation">
-                    <a class="header-nav" href="/Ecommerce/index.php">Home</a>
-                    <a class="header-nav" href="/Ecommerce/includes/About.php">About Us</a>
-                    <a class="header-nav" href="/Ecommerce/includes/HealthyTips.php">Healthy Tips</a>
-                    <a class="header-nav" href="/Ecommerce/includes/ContactUs.php">Contact</a>
+                    <a class="header-nav" href="/index.php">Home</a>
+                    <a class="header-nav" href="/includes/About.php">About Us</a>
+                    <a class="header-nav" href="/includes/HealthyTips.php">Healthy Tips</a>
+                    <a class="header-nav" href="/includes/ContactUs.php">Contact</a>
                     <!-- <div class="contact-icons">
                         <a href="https://www.instagram.com/mass__mari/reel/DPGeGiDgcos/" class="contact-icon instagram-icon" aria-label="Instagram" target="_blank">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24">

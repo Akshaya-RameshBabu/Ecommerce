@@ -138,23 +138,23 @@ if (!defined('FOOTER_INCLUDED')) {
             <div class="space-y-4">
                 <h3 class="text-xl font-bold text-red-400 mb-6">Quick Links</h3>
                 <ul class="space-y-3">
-                    <li><a href="/Ecommerce/index.php"
+                    <li><a href="/index.php"
                             class="text-gray-300 hover:text-red-400 transition-colors flex items-center space-x-2">
                             <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             <span>Home</span>
                         </a></li>
 
-                    <li><a href="/Ecommerce/includes/HealthyTips.php"
+                    <li><a href="/includes/HealthyTips.php"
                             class="text-gray-300 hover:text-red-400 transition-colors flex items-center space-x-2">
                             <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             <span>Healthy Tips</span>
                         </a></li>
-                    <li><a href="/Ecommerce/includes/ContactUs.php"
+                    <li><a href="/includes/ContactUs.php"
                             class="text-gray-300 hover:text-red-400 transition-colors flex items-center space-x-2">
                             <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             <span>Contact Us</span>
                         </a></li>
-                    <li><a href="/Ecommerce/includes/About.php"
+                    <li><a href="/includes/About.php"
                             class="text-gray-300 hover:text-red-400 transition-colors flex items-center space-x-2">
                             <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             <span>About Us</span>
@@ -194,7 +194,7 @@ if (!defined('FOOTER_INCLUDED')) {
                             </svg>
                         </div>
                         <div>
-                            <a href="/Ecommerce/index.php" id="scrollToBodyBtn" class="info-float" title="Scroll to Main Body">
+                            <a href="/index.php" id="scrollToBodyBtn" class="info-float" title="Scroll to Main Body">
                                 <img src="./images/booknow.webp" alt="">
                             </a>
                             <a href="https://wa.me/<?php echo preg_replace('/\D/', '', $phone); ?>" target="_blank"
@@ -306,13 +306,13 @@ if (!defined('FOOTER_INCLUDED')) {
                     </p>
                 </div>
                 <div class="flex flex-wrap justify-center gap-4 text-xs text-gray-500">
-                    <a href="/Ecommerce/includes/PrivacyPolicy.php" class="hover:text-white transition-colors">Privacy
+                    <a href="/includes/PrivacyPolicy.php" class="hover:text-white transition-colors">Privacy
                         Policy</a>
-                    <a href="/Ecommerce/includes/TandC.php" class="hover:text-white transition-colors">Terms of
+                    <a href="/includes/TandC.php" class="hover:text-white transition-colors">Terms of
                         Service</a>
-                    <a href="/Ecommerce/includes/ShipmentAndDelivery.php"
+                    <a href="/includes/ShipmentAndDelivery.php"
                         class="hover:text-white transition-colors">Shipping Policy</a>
-                    <a href="/Ecommerce/includes/CancellationAndReturn.php"
+                    <a href="/includes/CancellationAndReturn.php"
                         class="hover:text-white transition-colors">Return Policy</a>
 
                 </div>
