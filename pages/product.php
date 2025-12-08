@@ -1,6 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
-require_once __DIR__ . "/../includes/env.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
 $id = $_GET['id'] ?? null;
 if (!$id) exit("Invalid Product");

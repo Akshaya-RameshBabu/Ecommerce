@@ -1,6 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
-require_once __DIR__ . "/includes/env.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
 $host = $_ENV['DB_HOST'] ?? 'localhost';
 $dbname = $_ENV['DB_NAME'] ?? 'diwali_db';

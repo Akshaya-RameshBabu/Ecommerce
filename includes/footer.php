@@ -3,9 +3,9 @@
 if (!defined('FOOTER_INCLUDED')) {
     define('FOOTER_INCLUDED', true);
 
-    // Fetch contact info from DB
-    require_once 'common.php';
-    $contactStmt = mysqli_query($con, "SELECT * FROM admin_details LIMIT 1");
+    
+require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
+    $contactStmt = mysqli_query($mysqli, "SELECT * FROM admin_details LIMIT 1");
     $contact = mysqli_fetch_assoc($contactStmt);
     $address = $contact['shopaddress'] ?? 'Sivakasi, Tamil Nadu';
     $phone = $contact['phone'];

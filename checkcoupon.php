@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . "/includes/env.php";
 
 header('Content-Type: application/json');
-
+require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 // Database connection
 $host = $_ENV['DB_HOST'] ?? 'localhost';
 $dbname = $_ENV['DB_NAME'] ?? 'diwali_db';
