@@ -14,7 +14,7 @@
         <a href="ListOfEnquiries.php" class="block p-3 rounded hover:bg-indigo-700 transition-colors">List of Enquiries</a>
         <a href="Setting.php" class="block p-3 rounded hover:bg-indigo-700 transition-colors">Settings</a>
         <a href="Profile.php" class="block p-3 rounded hover:bg-indigo-700 transition-colors">Admin Profile</a>
-
+        <a href="carousel_manager.php" class="block p-3 rounded hover:bg-indigo-700 transition-colors">Carousel Manager</a>
         <form method="POST" action="logout.php" class="mt-4">
             <button type="submit" class="w-full bg-red-600 text-white p-3 rounded hover:bg-red-700 transition-colors">
                 Logout

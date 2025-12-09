@@ -1,29 +1,49 @@
 <?php
-session_start();
+
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
 
 $error = "";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $identifier = trim($_POST["identifier"]); // email or mobile
-    $password = trim($_POST["password"]);
 
-    // Prepare SQL (check both email and mobile)
-    $sql = "SELECT * FROM users WHERE mobile = :id OR email = :id LIMIT 1";
+    $identifier = trim($_POST["identifier"]); // email or mobile
+    $password   = trim($_POST["password"]);
+
+    // Fetch user by mobile or email
+    $sql  = "SELECT * FROM users WHERE mobile = :id OR email = :id LIMIT 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute(['id' => $identifier]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user["password_hash"])) {
-        $_SESSION["user_id"] = $user["id"];
+
+        // Save everything you need
+        $_SESSION["user_id"]   = $user["id"];
         $_SESSION["user_name"] = $user["name"];
-        header("Location: dashboard.php");
+        $_SESSION["user_email"]  = $user["email"];
+        $_SESSION["user_mobile"] = $user["mobile"];
+
+        // Redirect to previous page if stored
+        if (!empty($_SESSION["redirect_after_login"])) {
+            $redirect = $_SESSION["redirect_after_login"];
+            unset($_SESSION["redirect_after_login"]); 
+            header("Location: $redirect");
+            exit();
+        }
+
+        // Default page after login
+        header("Location: index.php");
         exit();
-    } else {
+    } 
+    else {
         $error = "Invalid login credentials!";
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html>

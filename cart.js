@@ -87,7 +87,7 @@ function loadCart() {
             </div>
 
             <div class="cart-item-amount">
-                ₹<span id="amount-${index}" class="itemtotal">${itemTotal}</span>
+                <strong class="m-1">₹</strong><span id="amount-${index}" class="itemtotal">${itemTotal}</span>
             </div>
         `;
 

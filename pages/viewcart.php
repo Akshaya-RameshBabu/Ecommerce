@@ -28,7 +28,7 @@
             <h3 class="summary-title">Order Summary</h3>
     <p>Total Items: <span id="totalItems">0</span></p>
     <p>Total Quantity: <span id="totalQty">0</span></p>
-    <p>Total Amount: ₹<span id="grandTotal" class="finalTotal">0</span></p>
+    <p>Total Amount: <span id="grandTotal" class="finalTotal">0</span></p>
     <button onclick="window.location.href='details.php'" class="checkout-btn">
     Checkout
 </button>

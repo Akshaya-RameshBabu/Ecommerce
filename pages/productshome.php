@@ -1,6 +1,11 @@
 <?php
 require_once 'vendor/autoload.php';
 
+$res = $conn->prepare("SELECT * FROM carousel ORDER BY sort_order ASC");
+$res->execute();
+$slides = $res->fetchAll(PDO::FETCH_ASSOC);
+
+
 // Fetch GST rate from the settings table
 $stmt = $conn->prepare("SELECT gst_rate, last_enquiry_number FROM settings LIMIT 1");
 $stmt->execute();
@@ -135,37 +140,36 @@ $publicCompressed = "/admin/" . $compressedFile;
 
 <body>
     <section id="hero" class="d-flex align-items-center justify-content-center" style="position: relative; z-index: 1;">
-  <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-    <!-- Indicators (small dots) -->
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div>
+<div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
 
-    <!-- Carousel Inner -->
-    <div class="carousel-inner">
-      <div class="carousel-item active" data-bs-interval="5000" style=" position: relative;">
-        <img src="images/BANNER1.png" class="d-block w-100" alt="Banner 1" style="object-fit: cover; max-height: 80vh;">
-      </div>
-      <div class="carousel-item" data-bs-interval="5000" style="position: relative;">
-        <img src="images/BANNER3.png" class="d-block w-100" alt="Banner 3" style="object-fit: cover; max-height: 80vh;">
-      </div>
-      <div class="carousel-item" data-bs-interval="5000">
-        <img src="images/BANNER2.png" class="d-block w-100" alt="Banner 2" style="object-fit: cover; max-height: 80vh;">
-      </div>
-    </div>
-
-    <!-- Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
+  <!-- Indicators -->
+  <div class="carousel-indicators">
+    <?php foreach ($slides as $i => $slide): ?>
+      <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="<?= $i ?>"
+        class="<?= $i === 0 ? 'active' : '' ?>"></button>
+    <?php endforeach; ?>
   </div>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+    <?php foreach ($slides as $i => $slide): ?>
+     <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>" data-bs-interval="5000">
+        <img src="<?= $slide['image_path'] ?>" class="d-block w-100" 
+             style="object-fit: cover; max-height: 80vh;">
+      </div>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
+</div>
+
 </section>
         <?php include "includes/header.php"; ?>
 
@@ -244,6 +248,7 @@ function saveToCart(product) {
     addToCart(product);
 
 }
+
     </script>
     <?php include "includes/footer.php"; ?>
 </body>

@@ -6,7 +6,8 @@
 :root {
   --gradient: linear-gradient(to right, #064e3b, #84cc16);
   --secondary:#84cc16;
-  --link:#639b10;
+  /* --link:#639b10; */
+  --link:#059669;
   --primaryclr:#064e3b;
   --green-700:#047857;
 --green-600:#059669;
@@ -190,7 +191,7 @@ h6 {
             gap: 2rem;
         }
         .desktop-nav a {
-            color: #639b10; /* gray-700 */
+            color: #059669; /* gray-700 */
             font-weight: 500;
             text-decoration: none;
             transition: color 0.2s;

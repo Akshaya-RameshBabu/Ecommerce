@@ -1,40 +1,81 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = isset($_SESSION['user_id']);
+
 // Ensure the header is only included once
 if (!defined('HEADER_INCLUDED')) {
     define('HEADER_INCLUDED', true);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-PE2CJCXNGL');
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-PE2CJCXNGL');
     </script>
-   <link rel="stylesheet" href="../Styles.css">
+    <link rel="stylesheet" href="../Styles.css">
 </head>
+
 <body>
-  
+
 
     <header id="header">
         <div class="container">
             <div class="header-content">
                 <div class="logo-container">
                     <svg class="sparkles-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 9.143 15.143 12l2.286 6.857L12 15.143 6.857 18 9.143 11.143 3 8l5.714 2.857L12 3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 9.143 15.143 12l2.286 6.857L12 15.143 6.857 18 9.143 11.143 3 8l5.714 2.857L12 3z" />
                     </svg>
                     <div class="logo-text">
                         <h1>RGreenMart</h1>
                         <p>Fresh. Pure. Premium.</p>
                     </div>
                 </div>
-                  
+
                 <nav class="desktop-nav" aria-label="Main navigation">
                     <a class="header-nav" href="/index.php">Home</a>
                     <a class="header-nav" href="/includes/About.php">About Us</a>
                     <a class="header-nav" href="/includes/HealthyTips.php">Healthy Tips</a>
-                    <a class="header-nav" href="/includes/ContactUs.php">Contact</a>
+                    <a class="header-nav" href="/includes/ContactUs.php">Contact</a> 
+                     <?php if($isLoggedIn): ?>
+                    <a class="header-nav" href="my_orders.php">My Orders</a>
+                     <div class="relative">
+        <!-- User Icon -->
+        <button id="userBtn" class="flex items-center gap-2 focus:outline-none">
+            <i class="fa-solid fa-user fa-lg headicon"></i>
+        </button>
+
+        <!-- Dropdown -->
+        <div id="userDropdown" class="absolute right-0 mt-4 w-36 bg-green-600 text-white rounded-lg shadow-lg hidden">
+            <button id="logoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-400 rounded-lg">Logout</button>
+        </div>
+    </div>
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
+        <h2 class="text-lg font-semibold mb-4">Confirm Logout</h2>
+        <p class="mb-6">Are you sure you want to logout?</p>
+        <div class="flex justify-end gap-4">
+            <button id="cancelLogout" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancel</button>
+            <button id="confirmLogout" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Logout</button>
+        </div>
+    </div>
+</div>
+    <?php else: ?>
+        <div>
+        <a href="login.php" class="px-4 py-2 rounded bg-green-600  hover:bg-green-700 transition"style="color: white !important;">Login</a>
+        <a href="register.php" class="px-4 py-2 rounded bg-blue-600  hover:bg-blue-700 transition"style="color: white !important;">Register</a>
+    </div>
+        <?php endif; ?>
                     <!-- <div class="contact-icons">
                         <a href="https://www.instagram.com/mass__mari/reel/DPGeGiDgcos/" class="contact-icon instagram-icon" aria-label="Instagram" target="_blank">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
@@ -52,22 +93,29 @@ if (!defined('HEADER_INCLUDED')) {
                             </svg>
                         </a>
                     </div> -->
-                  
-                </nav>
-                 <a href="index.php?page=viewcart" class="hideanchor mr-5 cart-link">
-                                        <div class=" mx-1" title="continue to pay">
-                                    <div class="cart-icon-wrapper">
-    <i class="fa-solid fa-cart-shopping headicon" style="font-size:22px;"></i>
-    <span id="cartCount" class="noticount">0</span>
-</div>
 
-</div></a>
-                <button class="mobile-nav-toggle" aria-label="Toggle mobile menu" aria-expanded="false" onclick="toggleMobileNav()">
+                </nav>
+                 
+                      <a href="index.php?page=viewcart" class="hideanchor mr-5 cart-link">
+                        <div class=" mx-1" title="continue to pay">
+                            <div class="cart-icon-wrapper">
+                                <i class="fa-solid fa-cart-shopping headicon" style="font-size:22px;"></i>
+                                <span id="cartCount" class="noticount">0</span>
+                            </div>
+
+                        </div>
+                    </a>
+              
+                <button class="mobile-nav-toggle" aria-label="Toggle mobile menu" aria-expanded="false"
+                    onclick="toggleMobileNav()">
                     <svg id="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <svg id="close-icon" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg id="close-icon" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -78,6 +126,10 @@ if (!defined('HEADER_INCLUDED')) {
                         <li><a href="/includes/About.php">About Us</a></li>
                         <li><a href="/HealthyTips.php">Safety</a></li>
                         <li><a href="/ContactUs.php">Contact</a></li>
+                          <li><a href="my_orders.php">My Orders</a></li>
+                         <li>  <a href="logout.php" >Logout</a></li>
+                       
+                      
                         <!-- <li>
                             <div class="contact-icons">
                                 <a href="https://www.instagram.com/mass__mari/reel/DPGeGiDgcos/" class="contact-icon instagram-icon" aria-label="Instagram" target="_blank">
@@ -103,33 +155,62 @@ if (!defined('HEADER_INCLUDED')) {
         </div>
     </header>
     <script>
-        function toggleMobileNav() {
-            const mobileNav = document.getElementById('mobile-nav');
-            const menuIcon = document.getElementById('menu-icon');
-            const closeIcon = document.getElementById('close-icon');
-            const toggleButton = document.querySelector('.mobile-nav-toggle');
-            const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
-            
-            mobileNav.classList.toggle('active');
-            menuIcon.classList.toggle('hidden');
-            closeIcon.classList.toggle('hidden');
-            mobileNav.setAttribute('aria-hidden', !isExpanded);
-            toggleButton.setAttribute('aria-expanded', !isExpanded);
+    function toggleMobileNav() {
+        const mobileNav = document.getElementById('mobile-nav');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const toggleButton = document.querySelector('.mobile-nav-toggle');
+        const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
+        mobileNav.classList.toggle('active');
+        menuIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+        mobileNav.setAttribute('aria-hidden', !isExpanded);
+        toggleButton.setAttribute('aria-expanded', !isExpanded);
+    }
+    document.querySelector('.mobile-nav-toggle').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleMobileNav();
         }
-        document.querySelector('.mobile-nav-toggle').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleMobileNav();
-            }
-        });
+    });
+
+
+    // Toggle dropdown
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    userBtn.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+    });
+
+    // Show logout modal
+    const logoutBtn = document.getElementById('logoutBtn');
+    const logoutModal = document.getElementById('logoutModal');
+    logoutBtn.addEventListener('click', () => {
+        userDropdown.classList.add('hidden');
+        logoutModal.classList.remove('hidden');
+    });
+
+    // Cancel logout
+    const cancelLogout = document.getElementById('cancelLogout');
+    cancelLogout.addEventListener('click', () => {
+        logoutModal.classList.add('hidden');
+    });
+
+    // Confirm logout
+    const confirmLogout = document.getElementById('confirmLogout');
+    confirmLogout.addEventListener('click', () => {
+        window.location.href = 'logout.php';
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener('click', (e) => {
+        if (!userBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.add('hidden');
+        }
+    });
     </script>
 </body>
+
 </html>
 <?php } ?>
-
-
-
-
-
-
-
