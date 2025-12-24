@@ -13,16 +13,94 @@ $gstRate = isset($settings['gst_rate']) ? floatval($settings['gst_rate']) : 18;
 if (!$product) exit("Product Not Found");
 
 // ----------------------- IMAGE LOGIC -----------------------
-$image = basename($product['image']);
-$originalImgPath = "./admin/Uploads/$image";
-$compressedImgPath = "./admin/Uploads/compressed/$image";
+
 $defaultImage = "./images/default.jpg";
 
-$displayImgPath = file_exists($compressedImgPath)
-    ? $compressedImgPath
-    : (file_exists($originalImgPath) ? $originalImgPath : $defaultImage);
+// Try to get primary image from item_images table first
+$imgStmt = $conn->prepare("SELECT compressed_path, image_path FROM item_images WHERE item_id = ? ORDER BY is_primary DESC, sort_order ASC LIMIT 1");
+$imgStmt->execute([$id]);
+$img = $imgStmt->fetch(PDO::FETCH_ASSOC);
+
+if ($img && (!empty($img['compressed_path']) || !empty($img['image_path']))) {
+    $candidate = !empty($img['compressed_path']) ? $img['compressed_path'] : $img['image_path'];
+
+    // Try candidate in multiple locations (root and admin/ prefix)
+    $variants = [
+        '/' . ltrim($candidate, '/'),
+        '/admin/' . ltrim($candidate, '/'),
+    ];
+
+    $found = false;
+    foreach ($variants as $v) {
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $v)) {
+            $displayImgPath = $v;
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $displayImgPath = $defaultImage;
+    }
+} else {
+    // Backwards compatible fallback to legacy columns
+    $image = basename($product['image']);
+    $originalImgPath = "./admin/Uploads/$image";
+    $compressedImgPath = "./admin/Uploads/compressed/$image";
+
+    $displayImgPath = file_exists($compressedImgPath)
+        ? $compressedImgPath
+        : (file_exists($originalImgPath) ? $originalImgPath : $defaultImage);
+}
 
 $displayImgPath = htmlspecialchars($displayImgPath, ENT_QUOTES, 'UTF-8');
+
+// --- Fetch all images for gallery ---
+$images = [];
+$allStmt = $conn->prepare("SELECT id, image_path, compressed_path, is_primary FROM item_images WHERE item_id = ? ORDER BY is_primary DESC, sort_order ASC");
+$allStmt->execute([$id]);
+$rows = $allStmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($rows as $r) {
+    $candidate = !empty($r['compressed_path']) ? $r['compressed_path'] : $r['image_path'];
+    if (empty($candidate)) continue;
+    $variants = ['/' . ltrim($candidate, '/'), '/admin/' . ltrim($candidate, '/')];
+    $src = null;
+    foreach ($variants as $v) {
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $v)) { $src = $v; break; }
+    }
+    if (!$src) continue;
+    $images[] = [
+        'id' => $r['id'],
+        'src' => $src,
+        'is_primary' => (bool)$r['is_primary']
+    ];
+}
+
+// If no images found via table, try legacy locations if product image exists
+if (empty($images)) {
+    $image = basename($product['image']);
+    if ($image) {
+        $orig = '/admin/Uploads/' . $image;
+        $comp = '/admin/Uploads/compressed/' . $image;
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $comp)) {
+            $images[] = ['id'=>0,'src'=>$comp,'is_primary'=>true];
+        } elseif (file_exists($_SERVER['DOCUMENT_ROOT'] . $orig)) {
+            $images[] = ['id'=>0,'src'=>$orig,'is_primary'=>true];
+        }
+    }
+}
+
+// Determine initial main image: primary first, else first image, else default
+$mainImageSrc = $displayImgPath; // start with computed display
+$initialIndex = 0;
+if (!empty($images)) {
+    $primaryFound = null;
+    foreach ($images as $idx => $imgEntry) {
+        if ($imgEntry['is_primary']) { $primaryFound = $imgEntry['src']; $initialIndex = $idx; break; }
+    }
+    $mainImageSrc = $primaryFound ?? $images[0]['src'];
+}
+ $mainImageSrc = htmlspecialchars($mainImageSrc, ENT_QUOTES, 'UTF-8');
 
 
 // ----------------------- PRICE CALCULATION -----------------------
@@ -54,21 +132,56 @@ $brandName = $brandStmt->fetchColumn() ?: "No Brand";
     <link rel="icon" type="image/png" href="./images/LOGO.jpg">
     <link rel="stylesheet" href="./Styles.css">
     <script src="cart.js"></script>
+    <!-- Bootstrap CSS for carousel and components -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
        <?php require_once $_SERVER["DOCUMENT_ROOT"] . "/includes/header.php"; ?>
    
-<div class="max-w-6xl mx-auto p-6 mt-10 bg-white shadow-lg rounded-xl mb-5">
+<div class=" p-6 m-10 bg-white shadow-lg rounded-xl mb-5">
 
     <!-- Product Main Block -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-        <!-- LEFT: IMAGE -->
-        <div class="w-full">
-            <img src="<?= $displayImgPath ?>" 
-                 alt="<?= htmlspecialchars($product['name']); ?>"
-                 class="w-full h-[350px] object-contain rounded-lg shadow">
+        <!-- LEFT: IMAGE + THUMBNAILS -->
+        <div class="w-full image-area flex gap-4 items-start">
+            <div id="thumbsColumn" class="thumbs flex flex-col items-center gap-3" style="min-width:120px;">
+                <?php if (!empty($images)): ?>
+                    <?php foreach($images as $i => $imgEntry): ?>
+                        <div class="thumb-box <?php if($imgEntry['is_primary']) echo 'primary'; ?>" data-bs-target="#productCarousel" data-bs-slide-to="<?= $i ?>" role="button" aria-label="View image <?= $i+1 ?>" style="width:100px;height:100px;">
+                            <img src="<?= htmlspecialchars($imgEntry['src'], ENT_QUOTES, 'UTF-8') ?>" alt="thumb" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;" />
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="thumb-box" style="width:100px;height:100px;">
+                        <img src="<?= htmlspecialchars($displayImgPath, ENT_QUOTES, 'UTF-8') ?>" alt="thumb" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;" />
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="flex-1 product-main">
+                <div id="productCarousel" class="carousel slide">
+                    <div class="carousel-inner">
+                        <?php foreach($images as $i => $imgEntry): ?>
+                            <div class="carousel-item <?= ($i === $initialIndex) ? 'active' : '' ?>">
+                                <img src="<?= htmlspecialchars($imgEntry['src'], ENT_QUOTES, 'UTF-8') ?>" class="d-block product-image" alt="Product image <?= $i+1 ?>">
+                            </div>
+                        <?php endforeach; ?>
+                        <?php if(empty($images)): ?>
+                            <div class="carousel-item active">
+                                <img src="<?= htmlspecialchars($displayImgPath, ENT_QUOTES, 'UTF-8') ?>" class="d-block product-image" alt="Product image">
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- RIGHT: DETAILS -->
@@ -80,13 +193,14 @@ $brandName = $brandStmt->fetchColumn() ?: "No Brand";
             </h1>
 
             <!-- BRAND + CATEGORY -->
-            <p class="text-gray-600 text-sm">Brand: 
+            <!-- <p class="text-gray-600 text-sm">Brand: 
                 <span class="font-semibold text-gray-700"><?= htmlspecialchars($brandName); ?></span>
             </p>
 
             <p class="text-gray-600 text-sm">Category: 
                 <span class="font-semibold text-gray-700"><?= htmlspecialchars($categoryName); ?></span>
-            </p>
+            </p> -->
+                 <p class="text-gray-600 text-sm"><?= nl2br($product['description']); ?></p>
 
             <!-- PRICE SECTION -->
             <div class="flex items-center gap-3">
@@ -254,7 +368,7 @@ const PRODUCT_DATA = {
     discountRate: <?= $discountRate; ?>,
     gstRate: <?= $gstRate ?? 0 ?>,
     price: <?= $simpleDiscountedPrice; ?>, 
-    image: "<?= $displayImgPath; ?>"
+    image: "<?= $mainImageSrc; ?>"
 };
 
 function sendToCart() {
@@ -269,5 +383,103 @@ function sendToCart() {
   <?php require_once $_SERVER["DOCUMENT_ROOT"] ."/includes/footer.php"; ?>
     
     <div id="toast-container"></div>
+    <!-- Bootstrap JS (bundle includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+    .thumb-box { position:relative; cursor:pointer; border:2px solid #e5e7eb; border-radius:6px; width:100px; height:100px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+    .thumb-box img { width:100%; height:100%; object-fit:cover; border-radius:6px; display:block; }
+    .thumb-box.selected { border-color: #16a34a; box-shadow:0 0 0 3px rgba(16,185,129,0.12); }
+
+    /* Layout: on small screens, stack main image above and show thumbnails horizontally below */
+    .image-area { display:flex; gap:1rem; align-items:flex-start; }
+    .thumbs { flex: 0 0 auto; }
+    .product-main { flex:1 1 auto; }
+
+    /* Desktop: main image fixed at 500x500 and vertical thumb column with scrollbar */
+    @media (min-width: 768px) {
+        .product-main { width:500px; height:500px; background:#fff; border-radius:12px; padding:10px;border:1px solid #e5e7eb;  }
+        /* Ensure carousel container honors height so images center properly (subtract padding) */
+        .product-main .carousel, .product-main .carousel-inner, .product-main .carousel-item { height:480px; }
+        .product-main .product-image { width:100%; height:100%; object-fit:contain; display:block; margin:0 auto; }
+
+        .thumbs { min-width:120px; max-height:520px; overflow-y:auto; padding-right:6px; }
+        .thumbs .thumb-box { width:90px; height:90px; margin-bottom:8px; }
+        /* Narrow but visible scrollbar */
+        .thumbs::-webkit-scrollbar { width:8px; }
+        .thumbs::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius:4px; }
+    }
+
+    /* Mobile: stack vertically and make thumbs horizontal scrollable below */
+    @media (max-width: 767px) {
+        .image-area { flex-direction: column; }
+        .thumbs { width:100%; display:flex; flex-direction:row; gap:0.5rem; overflow-x:auto; padding:0.5rem 0; }
+        .thumbs .thumb-box { width:70px; height:70px; flex:0 0 auto; }
+        .product-main  { width:100%; height:auto; max-height:350px; }
+    }
+
+    /* Minimal fallback for carousel visibility if Bootstrap CSS fails to load */
+    .carousel-item { display: none; }
+    .carousel-item.active { display: block; }
+
+    /* Carousel control styling: rounded dark translucent background and vertically centered left/right inside the product panel */
+    .product-main .carousel { position: relative; }
+    .product-main .carousel-control-prev,
+    .product-main .carousel-control-next {
+        position: absolute; top: 50%; transform: translateY(-50%); width:44px; height:44px; border-radius:50%; background: rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.18); border: none; opacity:1; transition: transform .15s ease, background .15s ease, box-shadow .15s ease; z-index:20;
+    }
+    .product-main .carousel-control-prev { left: 10px; right: auto; }
+    .product-main .carousel-control-next { right: 10px; left: auto; }
+    .product-main .carousel-control-prev:hover,
+    .product-main .carousel-control-next:hover,
+    .product-main .carousel-control-prev:focus,
+    .product-main .carousel-control-next:focus {
+        transform: translateY(-50%) scale(1.03); box-shadow: 0 10px 30px rgba(0,0,0,0.22); background: rgba(0,0,0,0.5);
+    }
+    .product-main .carousel-control-prev-icon, .product-main .carousel-control-next-icon { background-size: 20px 20px; filter: none; }
+
+    /* Thumbnails (carousel indicators) appearance: rounded, subtle shadow and background */
+    .thumb-box { background: #fff; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); transition: box-shadow .15s ease, transform .12s ease; }
+    .thumb-box:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
+
+    </style>
+    <script>
+    (function(){
+        const thumbs = Array.from(document.querySelectorAll('#thumbsColumn .thumb-box'));
+        const carouselEl = document.getElementById('productCarousel');
+        if (!carouselEl) return;
+
+        // Initialize Bootstrap carousel with no auto-ride
+        const bsCarousel = new bootstrap.Carousel(carouselEl, { interval: false });
+
+        const carouselItems = Array.from(carouselEl.querySelectorAll('.carousel-item'));
+        const initialIndex = <?= intval($initialIndex ?? 0) ?>;
+
+        // Do not mark any thumbnail as "selected" on initial load; selection appears after user interaction or carousel navigation.
+
+        // When carousel slides, update thumbnail selection
+        carouselEl.addEventListener('slid.bs.carousel', function(e) {
+            const active = carouselEl.querySelector('.carousel-item.active');
+            const idx = carouselItems.indexOf(active);
+            thumbs.forEach(t => t.classList.remove('selected'));
+            if (thumbs[idx]) {
+                thumbs[idx].classList.add('selected');
+                try { thumbs[idx].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); } catch(err){}
+            }
+        });
+
+        // Clicking a thumbnail uses Bootstrap data attributes to change slide; also provide immediate feedback
+        thumbs.forEach((t, i) => {
+            t.addEventListener('click', function() {
+                bsCarousel.to(i);
+                thumbs.forEach(x => x.classList.remove('selected'));
+                t.classList.add('selected');
+                try { t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); } catch(err){}
+            });
+        });
+
+        // Ensure initial carousel slide is correct
+        bsCarousel.to(initialIndex);
+    })();
+    </script>
 </body>
 </html>

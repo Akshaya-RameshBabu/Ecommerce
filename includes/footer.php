@@ -5,12 +5,24 @@ if (!defined('FOOTER_INCLUDED')) {
 
     
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
+
+
     $contactStmt = mysqli_query($mysqli, "SELECT * FROM admin_details LIMIT 1");
     $contact = mysqli_fetch_assoc($contactStmt);
     $address = $contact['shopaddress'] ?? 'Sivakasi, Tamil Nadu';
-    $phone = $contact['phone'];
+    $phone = $contact['phone']?? '';
     $phone2 = $contact['phone2'] ?? '';
     $email = $contact['email'] ?? 'info@rgreencrackers.com';
+    
+    $cleanPhone = isset($phone) ? preg_replace('/\D/', '', $phone) : '';
+
+// Use DB phone if valid, else fallback to .env phone
+$whatsappNumber = (strlen($cleanPhone) >= 10)
+    ? $cleanPhone
+    : WHATSAPP_DEFAULT_PHONE;
+
+// Get message from .env and encode
+$message = urlencode(WHATSAPP_DEFAULT_MESSAGE);
 ?>
 
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -324,15 +336,16 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
     <div class="bg-gradient-to-r from-green-600 via-lime-500 to-green-600 py-3">
         <div class="text-center">
             <p class="text-white font-medium text-sm">
-                🌿 GreenMart: Fresh Quality, Healthy Choices • Shop Sustainably • Live Well! 💚
+                🌿 RGreenMart: Fresh Quality, Healthy Choices • Shop Sustainably • Live Well!. Powered by Shopify 💚
             </p>
         </div>
     </div>
 </footer>
 
 <!-- ✅ WhatsApp Floating Button -->
-<a href="https://wa.me/<?php echo preg_replace('/\D/', '', $phone); ?>?text=Hello%20RGreen%20Crackers%2C%20I%20would%20like%20more%20information."
-    class="whatsapp-float" target="_blank">
+<a href="https://wa.me/<?php echo $whatsappNumber; ?>?text=<?php echo $message; ?>"
+   class="whatsapp-float"
+   target="_blank">
     <i class="fa-brands fa-whatsapp wa-icon"></i>
 </a>
 

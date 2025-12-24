@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $identifier = trim($_POST["identifier"]); // email or mobile
+    $identifier = trim($_POST["identifier"]); 
     $password   = trim($_POST["password"]);
 
     // Fetch user by mobile or email

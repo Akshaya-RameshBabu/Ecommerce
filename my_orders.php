@@ -20,7 +20,11 @@ $sql = "
         o.status,
         oi.id AS order_item_id,
         i.name AS product_name,
-        i.image AS product_image
+        (
+            SELECT COALESCE(compressed_path, image_path) FROM item_images
+            WHERE item_images.item_id = i.id
+            ORDER BY is_primary DESC, sort_order ASC LIMIT 1
+        ) AS product_image
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
     LEFT JOIN items i ON oi.item_id = i.id

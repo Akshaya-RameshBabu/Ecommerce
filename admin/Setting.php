@@ -15,6 +15,7 @@ $gstRate = $settings['gst_rate'] ?? '';
 $discount = $settings['discount'] ?? '';
 $packagingCharge = $settings['packaging_charge'] ?? '';
 $notificationText = $settings['notification_text'] ?? '';
+$minimumOrder = $settings['minimum_order'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +63,13 @@ $notificationText = $settings['notification_text'] ?? '';
                     <label for="packaging_charge" class="block text-sm font-medium text-gray-700">Packaging Charge:</label>
                     <input type="number" name="packaging_charge" id="packaging_charge"
                            value="<?= htmlspecialchars($packagingCharge) ?>" step="0.01" required
+                           class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label for="minimum_order" class="block text-sm font-medium text-gray-700">Minimum Order Amount:</label>
+                    <input type="number" name="minimum_order" id="minimum_order"
+                           value="<?= htmlspecialchars($minimumOrder) ?>" step="0.01" min="0"
                            class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
 

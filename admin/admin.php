@@ -77,8 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['update_settings'])) {
         $gstRate = htmlspecialchars($_POST['gst_rate']);
         $discount = htmlspecialchars($_POST['discount']);
-        $stmt = $conn->prepare("UPDATE settings SET gst_rate = ?, discount = ? WHERE id = 1");
-        $stmt->execute([$gstRate, $discount]);
+        $minimumOrder = isset($_POST['minimum_order']) ? htmlspecialchars($_POST['minimum_order']) : 0;
+        $stmt = $conn->prepare("UPDATE settings SET gst_rate = ?, discount = ?, minimum_order = ? WHERE id = 1");
+        $stmt->execute([$gstRate, $discount, $minimumOrder]);
     } elseif (isset($_POST['delete_admin'])) {
         $id = htmlspecialchars($_POST['id']);
         $stmt = $conn->prepare("DELETE FROM admin_users WHERE id = ?");
@@ -88,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fetch data from database
 $crackers = $conn->query("SELECT * FROM items")->fetchAll(PDO::FETCH_ASSOC);
-$settings = $conn->query("SELECT gst_rate, discount FROM settings LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+$settings = $conn->query("SELECT gst_rate, discount, minimum_order FROM settings LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 $admins = $conn->query("SELECT id, username FROM admin_users")->fetchAll(PDO::FETCH_ASSOC);
 $orders = $conn->query("SELECT * FROM orders ORDER BY ordered_date_time DESC")->fetchAll(PDO::FETCH_ASSOC);
 

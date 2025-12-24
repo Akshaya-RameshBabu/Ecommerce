@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 try {
     $stmt = $conn->prepare("SELECT * FROM admin_details LIMIT 1");

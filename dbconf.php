@@ -48,4 +48,13 @@ $mysqli = @mysqli_connect(
 if (!$mysqli) {
     exit("Database Connection Failed: " . mysqli_connect_error());
 }
+
+// ==========================
+//  SMTP CONSTANTS
+// ==========================
+define('SMTP_MAIL', $_ENV['SMTP_MAIL']);
+define('SMTP_PASSWORD', $_ENV['SMTP_PASSWORD']);
+define('MAIL_HOST', $_ENV['MAIL_HOST']);
+define('WHATSAPP_DEFAULT_PHONE', $_ENV['WHATSAPP_DEFAULT_PHONE'] ?? '919655562772');
+define('WHATSAPP_DEFAULT_MESSAGE', $_ENV['WHATSAPP_DEFAULT_MESSAGE'] ?? 'Hello RGreenmart, I would like more information.');
 ?>

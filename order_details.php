@@ -37,7 +37,11 @@ $sqlItems = "
     SELECT 
         oi.*, 
         i.name AS product_name, 
-        i.image 
+        (
+            SELECT COALESCE(compressed_path, image_path) FROM item_images
+            WHERE item_images.item_id = i.id
+            ORDER BY is_primary DESC, sort_order ASC LIMIT 1
+        ) AS product_image
     FROM order_items oi
     LEFT JOIN items i ON oi.item_id = i.id
     WHERE oi.order_id = ?
@@ -150,7 +154,11 @@ $orderItems = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
     <div class="space-y-4">
         <?php foreach ($orderItems as $item): ?>
         <div class="flex flex-col md:flex-row items-center md:items-start border p-4 rounded-xl shadow-sm hover:shadow-md transition">
-            <img src="admin/<?= htmlspecialchars($item['image'] ?? 'no-image.png') ?>" 
+            <?php
+                $img = $item['product_image'] ?? null;
+                $imgSrc = $img ? 'admin/' . ltrim($img, '/') : 'images/default.jpg';
+            ?>
+            <img src="<?= htmlspecialchars($imgSrc, ENT_QUOTES) ?>" 
                  alt="<?= htmlspecialchars($item['product_name']) ?>" 
                  class="w-24 h-24 md:w-28 md:h-28 object-cover rounded-lg mb-3 md:mb-0 md:mr-6">
             <div class="flex-1">

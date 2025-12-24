@@ -50,6 +50,16 @@ try {
     $net_total      = (float) ($data["net_total"] ?? 0);
     $overall_total  = (float) ($data["overall_total"] ?? 0);
 
+    // Check minimum order amount from settings
+    $minRow = $conn->query("SELECT minimum_order FROM settings LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    $minimumOrder = isset($minRow['minimum_order']) ? (float)$minRow['minimum_order'] : 0;
+
+    if ($overall_total < $minimumOrder) {
+        echo json_encode(["success" => false, "message" => "Minimum order amount is ₹" . number_format($minimumOrder,2)]);
+        $conn->rollBack();
+        exit;
+    }
+
     // 4. INSERT ORDER
     $stmt = $conn->prepare("INSERT INTO orders 
         (enquiry_no, user_id, address_id, subtotal, packing_charge, net_total, overall_total, status, created_at) 

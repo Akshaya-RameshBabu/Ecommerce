@@ -1,10 +1,17 @@
 <?php
-$isLoggedIn = isset($_SESSION['user_id']);
-
 // Ensure the header is only included once
 if (!defined('HEADER_INCLUDED')) {
     define('HEADER_INCLUDED', true);
+}
+
+// Start session if not already
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = isset($_SESSION['user_id']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +51,7 @@ if (!defined('HEADER_INCLUDED')) {
                     <a class="header-nav" href="/includes/HealthyTips.php">Healthy Tips</a>
                     <a class="header-nav" href="/includes/ContactUs.php">Contact</a> 
                      <?php if($isLoggedIn): ?>
-                    <a class="header-nav" href="my_orders.php">My Orders</a>
+                    <a class="header-nav" href="/my_orders.php">My Orders</a>
                      <div class="relative">
         <!-- User Icon -->
         <button id="userBtn" class="flex items-center gap-2 focus:outline-none">
@@ -122,7 +129,7 @@ if (!defined('HEADER_INCLUDED')) {
                         <li><a href="/includes/About.php">About Us</a></li>
                         <li><a href="/HealthyTips.php">Safety</a></li>
                         <li><a href="/ContactUs.php">Contact</a></li>
-                          <li><a href="my_orders.php">My Orders</a></li>
+                          <li><a href="/my_orders.php">My Orders</a></li>
                          <li>  <a href="logout.php" >Logout</a></li>
                        
                       
@@ -209,4 +216,3 @@ if (!defined('HEADER_INCLUDED')) {
 </body>
 
 </html>
-<?php } ?>

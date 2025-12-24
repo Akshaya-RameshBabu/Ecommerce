@@ -23,6 +23,7 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
     // Sanitize input
+    
     $adminUsername = trim($_POST['username'] ?? '');
     $adminPassword = trim($_POST['password'] ?? '');
 
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
         $_SESSION['admin_username'] = $row['username']; // Use the username fetched from DB
         session_write_close();
         // Redirect to the dashboard
-        header('Location: ManageCrackers.php');
+        header('Location: Manageitems.php');
         exit;
         
     } else {

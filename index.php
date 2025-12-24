@@ -1,5 +1,9 @@
 <?php
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
+$logoDir = "images/logo/";
+$logos = glob($logoDir . "*.{png,jpg,jpeg,svg,webp}", GLOB_BRACE);
+// Opt-in debugging flag (use ?debug_images=1)
+$debugImages = isset($_GET['debug_images']) && $_GET['debug_images'] === '1';
 
 $res = $conn->prepare("SELECT * FROM carousel ORDER BY sort_order ASC");
 $res->execute();
@@ -7,12 +11,12 @@ $slides = $res->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Fetch GST rate from the settings table
-$stmt = $conn->prepare("SELECT gst_rate, last_enquiry_number,notification_text FROM settings LIMIT 1");
+$stmt = $conn->prepare("SELECT gst_rate, last_enquiry_number, notification_text, minimum_order FROM settings LIMIT 1");
 $stmt->execute();
 $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 $notificationText = !empty($settings['notification_text']) ? $settings['notification_text'] : null;
 $gstRate = isset($settings['gst_rate']) ? floatval($settings['gst_rate']) : 18;
-$minimumOrder = 2000; // Minimum order amount
+$minimumOrder = !empty($settings['minimum_order']) ? floatval($settings['minimum_order']) : 2000; // Minimum order amount
 
 // Fetch shop details from DB
 $stmt = $conn->prepare("SELECT name, shopaddress, phone, email FROM admin_details LIMIT 1");
@@ -24,10 +28,59 @@ $shopAddress = $shop['shopaddress'] ?? 'Chandragandhi Nagar, Madurai, Tamil Nadu
 $shopPhone = $shop['phone'] ?? '99524 24474';
 $shopEmail = $shop['email'] ?? 'sales@rgreenmart.com';
 
-// Fetch data from items table
-$stmt = $conn->prepare("SELECT * FROM items");
+// Fetch necessary data from items table including only the primary image from item_images
+$stmt = $conn->prepare(
+    "SELECT 
+        i.id, 
+        i.name, 
+        i.category_id, 
+        i.brand_id, 
+        i.status, 
+        i.packaging_type, 
+        i.product_form, 
+        i.origin, 
+        i.grade, 
+        i.purity, 
+        i.flavor, 
+        i.description, 
+        i.nutrition, 
+        i.shelf_life, 
+        i.storage_instructions, 
+        i.expiry_info, 
+        i.tags, 
+        i.created_at, 
+        i.updated_at,
+        -- Use the image column from items table, fall back to subquery if empty
+        COALESCE(i.image, (
+            SELECT COALESCE(compressed_path, image_path) 
+            FROM item_images 
+            WHERE item_id = i.id AND is_primary = 1 
+            LIMIT 1
+        )) AS primary_image,
+        -- Fetch price and stock from the first available variant
+        v.price, 
+        v.old_price, 
+        v.discount, 
+        v.stock, 
+        v.weight_value, 
+        v.weight_unit
+    FROM items i
+    LEFT JOIN item_variants v ON v.id = (
+        SELECT id FROM item_variants 
+        WHERE item_id = i.id AND status = 1 
+        ORDER BY price ASC LIMIT 1
+    )"
+);
 $stmt->execute();
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// If debug mode is enabled, dump the raw query result to browser console and error log
+if ($debugImages) {
+    // Use JSON_UNESCAPED_SLASHES to keep paths readable in console
+    $jsonItems = json_encode($items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    echo "<script>console.log('DEBUG: items query result', $jsonItems);</script>";
+    error_log('[image-debug] items query result: ' . $jsonItems);
+}
 
 // GST Rate (Set from your code)
 $gstRate = 18; // <-- Change if needed
@@ -45,29 +98,58 @@ foreach ($items as $idx => $item) {
     $discountAmount = round($netPrice * ($discountRate / 100));
     $simpleDiscountedPrice = round($grossPrice * (1 - ($discountRate / 100)));
 
-    // -------- IMAGE PATH HANDLING -------- //
-
-    $imageFile = trim($item['image']);   // Example: Uploads/abc.jpg
-    $compressedFile = trim($item['compressed_image']);
+    // -------- IMAGE PATH HANDLING (NEW: use item_images table) -------- //
 
     $defaultPublicImage = "/images/default.jpg";
+    // Use the primary image provided by the query (is_primary = 1). If absent, use default.
+    $candidate = trim($item['primary_image'] ?? '');
 
-    // Physical file paths
-$serverOriginal   = $_SERVER["DOCUMENT_ROOT"] . "/admin/" . $imageFile;
+    // Resolve candidate across possible public paths (try without and with /admin/ prefix)
+    $displayImgPath = $defaultPublicImage;
+    $publicOriginal = $defaultPublicImage;
+    $publicCompressed = $defaultPublicImage;
+    $fileExists = false;
+    $testedPaths = [];
 
-$serverCompressed = $_SERVER["DOCUMENT_ROOT"] . "/admin/" . $compressedFile;
+    if (!empty($candidate)) {
+        $variants = [
+            '/' . ltrim($candidate, '/'),
+            '/admin/' . ltrim($candidate, '/'),
+        ];
 
-$publicOriginal   = "/admin/" . $imageFile;
-$publicCompressed = "/admin/" . $compressedFile;
+        foreach ($variants as $p) {
+            $testedPaths[] = $p;
+            $serverP = $_SERVER['DOCUMENT_ROOT'] . $p;
+            if (file_exists($serverP)) {
+                $displayImgPath = $p;
+                $publicOriginal = $p;
+                $publicCompressed = $p;
+                $fileExists = true;
+                break;
+            }
+        }
+    }
 
+    // Debug output (opt-in)
+    if ($debugImages) {
+        $dbg = [
+            'item_id' => $item['id'] ?? null,
+            'item_name' => $item['name'] ?? null,
+            'primary_image_field' => $item['primary_image'] ?? null,
+            'candidate' => $candidate,
+            'tested_paths' => $testedPaths ?? [],
+            'serverPath' => isset($serverP) ? $serverP : null,
+            'file_exists' => $fileExists,
+            'displayImgPath' => $displayImgPath
+        ];
 
-    // Select best available image
-    if (!empty($imageFile) && file_exists($serverOriginal)) {
-        $displayImgPath = $publicOriginal;
-    } elseif (!empty($compressedFile) && file_exists($serverCompressed)) {
-        $displayImgPath = $publicCompressed;
-    } else {
-        $displayImgPath = $defaultPublicImage;
+        // Output to page for quick debugging
+        echo "<div style='background:#fff7cc;border:1px solid #ffd54f;padding:8px;margin:6px 0;font-family:monospace;'>";
+        echo "<strong>Image Debug:</strong> " . htmlspecialchars(json_encode($dbg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        echo "</div>";
+
+        // Also write to server error log for post-mortem
+        error_log("[image-debug] " . json_encode($dbg));
     }
 
     // -------- BUILD CLEAN OUTPUT ARRAY -------- //
@@ -90,7 +172,6 @@ $publicCompressed = "/admin/" . $compressedFile;
 
         // STOCK
         'stock'  => $item['stock'],
-        'status' => $item['status'],
 
         // IMAGES
         'image'           => $publicOriginal,
@@ -98,7 +179,7 @@ $publicCompressed = "/admin/" . $compressedFile;
         'displayImgPath'  => htmlspecialchars($displayImgPath, ENT_QUOTES),
 
         // PRODUCT DETAILS
-        'weight'        => $item['weight'],
+        'weight'        => $item['weight_value'] . ' ' . $item['weight_unit'],
         'packaging_type'=> $item['packaging_type'],
         'product_form'  => $item['product_form'],
         'origin'        => $item['origin'],
@@ -120,6 +201,7 @@ $publicCompressed = "/admin/" . $compressedFile;
 
         'discountRate' => $discountRate,
     ];
+  
 }
 
 ?>
@@ -263,6 +345,23 @@ function saveToCart(product) {
 
 }
     </script>
+
+    <div class="partner-wrapper">
+    <div class="partner-track">
+        <?php foreach ($logos as $logo): ?>
+            <div class="partner-logo">
+                <img src="<?= $logo ?>" alt="Partner Logo">
+            </div>
+        <?php endforeach; ?>
+
+        <!-- duplicate for smooth infinite scroll -->
+        <?php foreach ($logos as $logo): ?>
+            <div class="partner-logo">
+                <img src="<?= $logo ?>" alt="Partner Logo">
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
     <?php require_once $_SERVER["DOCUMENT_ROOT"] ."/includes/footer.php"; ?>
     
     <div id="toast-container"></div>

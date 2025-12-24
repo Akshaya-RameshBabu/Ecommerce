@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     gst_rate = ?, 
                     discount = ?, 
                     packaging_charge = ?, 
+                    minimum_order = ?, 
                     notification_text = ?, 
                     updated_at = NOW()
                 WHERE id = ?
@@ -33,19 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_POST['gst_rate'],
                 $_POST['discount'],
                 $_POST['packaging_charge'],
+                isset($_POST['minimum_order']) ? $_POST['minimum_order'] : 0,
                 $_POST['notification_text'],
                 $row['id']
             ]);
         } else {
             // Row does not exist → INSERT
-            $stmt = $conn->prepare("
-                INSERT INTO settings (gst_rate, discount, packaging_charge, notification_text, updated_at)
-                VALUES (?, ?, ?, ?, NOW())
-            ");
+            $stmt = $conn->prepare("INSERT INTO settings (gst_rate, discount, packaging_charge, minimum_order, notification_text, updated_at) VALUES (?, ?, ?, ?, ?, NOW())");
             $stmt->execute([
                 $_POST['gst_rate'],
                 $_POST['discount'],
                 $_POST['packaging_charge'],
+                isset($_POST['minimum_order']) ? $_POST['minimum_order'] : 0,
                 $_POST['notification_text']
             ]);
         }
