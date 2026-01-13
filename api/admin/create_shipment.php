@@ -109,7 +109,7 @@ try {
         'billing_state' => $state,
         'billing_pincode' => (string)$order['pincode'],
         'billing_country' => 'India',
-        'payment_method' => ($order['payment_status'] === 'paid') ? 'Prepaid' : 'COD',
+        'payment_method' => (isset($order['payment_method']) && strtolower($order['payment_method']) === 'cod') ? 'COD' : 'Prepaid',
         'order_items' => $orderItems,
         'weight' => max(0.5, round($totalWeight, 2)),
         'length' => 10,

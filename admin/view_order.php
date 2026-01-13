@@ -9,6 +9,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
+
 // Check order ID
 if (!isset($_GET['id'])) {
     die("Order ID missing!");
@@ -137,6 +138,15 @@ $items = $stmt_items->fetchAll(PDO::FETCH_ASSOC);
                             <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Pending</span>
                         <?php else: ?>
                             <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">Failed</span>
+                        <?php endif; ?>
+                    </p>
+
+                    <p>
+                        <span class="font-semibold">Payment Method:</span>
+                        <?php if (isset($order['payment_method']) && $order['payment_method'] === 'cod'): ?>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">COD</span>
+                        <?php else: ?>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm"><?php echo strtoupper($order['payment_method'] ?? 'ONLINE'); ?></span>
                         <?php endif; ?>
                     </p>
 

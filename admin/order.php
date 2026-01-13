@@ -9,6 +9,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
+
+
 // Build an items summary per order (safe: check if variant weight columns exist)
 $dbName = $_ENV['DB_NAME'] ?? $conn->query('select database()')->fetchColumn();
 $colsStmt = $conn->prepare("SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = 'order_items'");
@@ -55,6 +57,7 @@ SELECT
     o.enquiry_no,
     o.overall_total,
     o.payment_status,
+    o.payment_method,
     o.order_date,
     o.status,
     o.cancelled_by,
@@ -121,6 +124,7 @@ $billsDir = realpath(__DIR__ . '/../bills');
                                 <th class="p-3 text-left">Mobile</th>
                                 <th class="p-3 text-left">Overall Total (₹)</th>
                                 <th class="p-3 text-left">Payment Status</th>
+                                <th class="p-3 text-left">Payment Method</th>
                                 <th class="p-3 text-left">Order Status</th>
                                 <th class="p-3 text-left">Order Date</th>
                                 <th class="p-3 text-left">Enquiry No</th>
@@ -150,6 +154,14 @@ $billsDir = realpath(__DIR__ . '/../bills');
                                     <?php else: ?>
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php if (isset($order['payment_method']) && $order['payment_method'] === 'cod'): ?>
+                                        <span class="px-2 inline-flex text-xs bg-orange-100 text-orange-800 rounded-full">COD</span>
+                                    <?php else: ?>
+                                        <span class="px-2 inline-flex text-xs bg-emerald-100 text-emerald-800 rounded-full"><?php echo strtoupper($order['payment_method'] ?? 'ONLINE'); ?></span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

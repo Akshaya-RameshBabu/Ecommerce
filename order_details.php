@@ -2,6 +2,7 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
+
 // Check login
 if (!isset($_SESSION["user_id"])) {
     $_SESSION["redirect_after_login"] = "my_orders.php";
@@ -251,7 +252,13 @@ $variantWeightsSummary = implode(', ', array_keys($variantWeightsArr));
         </div>
         <div class="space-y-2">
             <p><span class="font-semibold">Payment Status:</span> 
-                <span class="payment_badge <?= $order['payment_status'] ?>"><?= ucfirst($order['payment_status']) ?></span>
+                <span class="payment_badge <?= htmlspecialchars($order['payment_status']) ?>"><?= ucfirst(htmlspecialchars($order['payment_status'])) ?></span>
+            </p>
+
+            <p><span class="font-semibold">Payment Method:</span>
+                <span class="payment_badge <?= ($order['payment_method'] === 'cod') ? 'pending' : 'paid' ?>">
+                    <?= strtoupper(htmlspecialchars($order['payment_method'] ?? ($order['payment_status'] === 'paid' ? 'prepaid' : 'online'))) ?>
+                </span>
             </p>
              
             <?php if($order['payment_status'] === 'paid'): ?>

@@ -2,6 +2,7 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/dbconf.php";
 
+
 if (!isset($_SESSION["user_id"])) {
     $_SESSION["redirect_after_login"] = "my_orders.php";
     header("Location: login.php");
@@ -68,6 +69,7 @@ $sql = "
         o.order_date,
         o.overall_total,
         o.payment_status,
+        o.payment_method,
         o.status,
         o.shipment_id,
         oi.id AS order_item_id," . $selectExtra . "
@@ -281,6 +283,14 @@ if (!empty($shipmentIds)) {
             <span class="order-price">
                 ₹<?= number_format($row['overall_total'], 2) ?>
             </span>
+
+            <div style="margin-top:6px">
+                <?php if(isset($row['payment_method']) && $row['payment_method'] === 'cod'): ?>
+                    <span class="payment_badge" style="background:#fff4e6;color:#92400e;border:1px solid #f59e0b;">COD</span>
+                <?php else: ?>
+                    <span class="payment_badge" style="background:#ecfccb;color:#14532d;border:1px solid #86efac;">Prepaid</span>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 

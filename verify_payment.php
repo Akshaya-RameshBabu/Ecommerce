@@ -81,7 +81,8 @@ try {
             payment_status='paid', 
             razorpay_payment_id=?, 
             razorpay_signature=? ,
-            status='ordered'
+            status='ordered',
+            payment_method='razorpay'
         WHERE id=?
     ")->execute([$paymentId, $signature, $orderId]);
 

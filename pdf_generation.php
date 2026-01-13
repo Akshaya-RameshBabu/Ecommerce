@@ -238,6 +238,8 @@ $overallTotal = $netTotal + $shippingCharge;
                 <div style='text-align: center; margin: 20px;'>
                  <a href='/bills/estimate_$enquiryNumber.pdf' class='btn-success' download>Download PDF</a>
                 </div>
+
+                
             </div>
         </body>
         </html>";

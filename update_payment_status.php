@@ -10,7 +10,8 @@ if ($status === "success") {
         UPDATE orders 
         SET payment_status = 'paid',
            status = 'ordered',
-            razorpay_payment_id = ?
+            razorpay_payment_id = ?,
+            payment_method = 'razorpay'
         WHERE id = ?
     ");
     $stmt->execute([$paymentId, $orderId]);
@@ -19,8 +20,8 @@ if ($status === "success") {
     // FAILED PAYMENT
     $stmt = $conn->prepare("
         UPDATE orders 
-        SET payment_status = 'failed'
-        status = 'pending'
+        SET payment_status = 'failed',
+            status = 'pending'
         WHERE id = ?
     ");
     $stmt->execute([$orderId]);

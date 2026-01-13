@@ -121,6 +121,11 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <hr class="my-2">
 
+            <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2"><input type="radio" name="payment_method" value="online" checked onchange="togglePayBtn()"> Online Payment</label>
+                <label class="flex items-center gap-2"><input type="radio" name="payment_method" value="cod" onchange="togglePayBtn()"> Cash on Delivery (COD)</label>
+            </div>
+
             <div class="flex justify-between text-xl font-bold text-gray-900">
                 <span>Final Total:</span>
                 <span>₹<span id="finalTotal">0.00</span></span>
@@ -175,6 +180,17 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <script>
+        function togglePayBtn() {
+    const method = document.querySelector('input[name="payment_method"]:checked').value;
+    document.getElementById('payBtn').innerText =
+        method === 'cod' ? 'Place Order' : 'Continue to Payment';
+}
+function togglePayBtn() {
+    const method = document.querySelector('input[name="payment_method"]:checked').value;
+    document.getElementById('payBtn').innerText =
+        method === 'cod' ? 'Place Order' : 'Continue to Payment';
+}
+
     window.currentShippingCharge = 0;
     window.currentFinalTotal = 0;
     window.currentCourier = null;
@@ -373,12 +389,15 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
         btn.innerText = "Processing...";
 
         try {
+          const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
           const payload = {
     address_id: selected.value,
     cart: cart,
     subtotal: calculateSubtotal().toFixed(2),
     shipping_charge: window.currentShippingCharge.toFixed(2),
     overall_total: window.currentFinalTotal.toFixed(2),
+    payment_method: paymentMethod,
     ...(window.currentCourier ? { courier_name: window.currentCourier } : {}),
     ...(window.currentETA ? { courier_eta: window.currentETA } : {}),
     ...(window.currentCourierId ? { courier_company_id: window.currentCourierId } : {})
@@ -395,6 +414,17 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);
+
+            // If server returned COD response, finalize without Razorpay
+            if (data.payment_method && data.payment_method === 'cod') {
+                showToast('Order placed. Cash on Delivery selected. Redirecting…', { background: '#0ea5a4', color: '#fff' });
+                try { localStorage.removeItem('cart'); } catch(e) {}
+                // Redirect to invoice/generate page so cart can be cleared and invoice shown
+                window.location.href = `pdf_generation.php?order_id=${data.order_id}&cart_cleared=true`;
+                return;
+            }
+
+            if (!data.razorpay_order_id || !data.key) throw new Error('Payment gateway initialization failed');
 
             const options = {
                 key: data.key,

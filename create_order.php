@@ -59,38 +59,28 @@ try {
         exit;
     }
 
-    // 4. INSERT ORDER
-$stmt = $conn->prepare("
-    INSERT INTO orders (
-        enquiry_no,
-        user_id,
-        address_id,
-        subtotal,
-        shipping_charge,
-        overall_total,
-         courier_company_id,
-        courier_name,
-        estimated_delivery_days,
-        etd,
-        status,
-        created_at
-    ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  'pending', NOW()
-    )
-");
+    
 
-$stmt->execute([
-    $enquiryNumber,
-    $user_id,
-    $address_id,
-    $subtotal,
-    $data['shipping_charge'] ?? 0,                
-    $overall_total,
-    $data['courier_company_id'] ?? null,
-    $data['courier_name'] ?? null,
-    $data['courier_eta'] ?? null,
-    $data['courier_etd'] ?? null
-]);
+    $paymentMethod = strtolower(trim($data['payment_method'] ?? 'online')) === 'cod' ? 'cod' : 'online';
+    $initialPaymentStatus = ($paymentMethod === 'cod') ? 'pending' : 'pending';
+
+    // 5. INSERT ORDER (includes payment_method & payment_status)
+    $stmt = $conn->prepare("\n        INSERT INTO orders (\n            enquiry_no,\n            user_id,\n            address_id,\n            subtotal,\n            shipping_charge,\n            overall_total,\n            courier_company_id,\n            courier_name,\n            estimated_delivery_days,\n            etd,\n            status,\n            payment_method,\n            payment_status,\n            created_at\n        ) VALUES (\n            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, NOW()\n        )\n    ");
+
+    $stmt->execute([
+        $enquiryNumber,
+        $user_id,
+        $address_id,
+        $subtotal,
+        $data['shipping_charge'] ?? 0,                
+        $overall_total,
+        $data['courier_company_id'] ?? null,
+        $data['courier_name'] ?? null,
+        $data['courier_eta'] ?? null,
+        $data['courier_etd'] ?? null,
+        $paymentMethod,
+        $initialPaymentStatus
+    ]);
 
 
 
@@ -143,7 +133,24 @@ $stmt->execute([
         $stmt->execute($params);
     }
 
-    // 6. CREATE RAZORPAY ORDER
+    // 6. If COD, skip Razorpay and return success immediately
+    if ($paymentMethod === 'cod') {
+        // For COD, keep payment_status as 'pending' and status as 'pending' / order placed
+        $conn->commit();
+
+        // Clear any session reservation if present
+        unset($_SESSION['order_id']);
+
+        echo json_encode([
+            "success" => true,
+            "order_id" => $orderId,
+            "payment_method" => "cod",
+            "message" => "Order placed with Cash on Delivery."
+        ]);
+        exit;
+    }
+
+    // Otherwise proceed with online payment (Razorpay)
     $api = new Api($_ENV['RAZORPAY_KEY_ID'], $_ENV['RAZORPAY_KEY_SECRET']);
 
     $razorpayOrder = $api->order->create([
@@ -154,8 +161,8 @@ $stmt->execute([
 
     $razorpayOrderId = $razorpayOrder["id"];
 
-    // SAVE razorpay_order_id
-    $stmt = $conn->prepare("UPDATE orders SET razorpay_order_id = ? WHERE id = ?");
+    // SAVE razorpay_order_id and mark payment_method as 'razorpay'
+    $stmt = $conn->prepare("UPDATE orders SET razorpay_order_id = ?, payment_method = 'razorpay' WHERE id = ?");
     $stmt->execute([$razorpayOrderId, $orderId]);
 
     $conn->commit();
@@ -177,7 +184,6 @@ $stmt->execute([
             "mobile" => $user["mobile"]
         ]
     ]);
-
 } catch (Exception $e) {
     $conn->rollBack();
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
