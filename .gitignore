@@ -20,7 +20,6 @@
 .env.development
 
 *.mp4
-*.sql
 *.zip
 assets/vendor/
 assets/images/
