@@ -96,12 +96,7 @@ function compressImage($source, $destination, $quality = 25) {
 // ----------------- Single Upload Logic -----------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
     
-    // START DEBUGGING OUTPUT
-    echo "<h2>--- SERVER-SIDE DEBUGGING START ---</h2>";
-    echo "<h3>\$_POST Data:</h3>";
-    echo "<pre>" . print_r($_POST, true) . "</pre>";
-    echo "<h3>\$_FILES Data:</h3>";
-    echo "<pre>" . print_r($_FILES, true) . "</pre>";
+    
 
     // START DB TRANSACTION
     $conn->beginTransaction();
@@ -143,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
         ]);
 
         $item_id = $conn->lastInsertId();
-        echo "<h3>Main Item Inserted: Item ID = $item_id</h3>";
 
 
         // ----------------- Handle multiple images -----------------
@@ -159,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
         } else {
             // Files exist in $_FILES, now proceed with ordering and insertion
             $files = $_FILES['images'];
-            echo "<h3>Image Upload Status: STARTING</h3>";
             
             // Fall back to sequential upload if order array is empty (shouldn't happen with JS)
             if (empty($orderArray)) {
@@ -178,7 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
                 }
             }
 
-            echo "<h4>Processing " . count($orderArray) . " images...</h4>";
 
             // Loop according to the client-side drag-drop order ('order' array)
             foreach ($orderArray as $sortOrder => $fileIndex) {
@@ -214,7 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
                     echo "<p class='text-red-500'>Error: Could not move uploaded file for $originalName. Check directory permissions or file size limits.</p>";
                     continue; 
                 }
-                echo "<p>File $sortOrder ($originalName) moved to $finalPath.</p>";
 
 
                 // Compress image into the Uploads/compressed/ subfolder
@@ -236,7 +227,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
                     $primaryImagePath = $dbCompressedPath;
                 }
 
-                echo "<p>-> Image Inserted: ID = $newImageId, Path = $dbCompressedPath, Primary = $isPrimary</p>";
 
             }
         } // End of image upload block
@@ -294,9 +284,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
 
         $conn->commit(); // Commit transaction on success
         $success = true;
-        echo "<h3>Database Transaction Status: COMMITTED</h3>";
-        echo "<p class='text-green-500 text-center'>Item uploaded successfully! (Item ID: $item_id)</p>";
-        echo "<h4>Inserted Image IDs: " . implode(', ', $insertedImageIds) . "</h4>";
 
 
     } catch (PDOException $e) {
@@ -316,7 +303,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['single_upload'])) {
          echo "<p class='text-red-500 text-center'>System Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
          exit;
     }
-    echo "<h2>--- SERVER-SIDE DEBUGGING END ---</h2>";
 }
 ?>
 
